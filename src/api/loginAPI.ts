@@ -1,5 +1,5 @@
 import { post } from "@/utils/http"
-import type { LoginType } from "@/type/login"
+import type { LoginType } from "@/type/loginTy"
 
 const API = {
     Login:'/login'

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getLoginAPI } from '@/api/login'
-import type { LoginType } from '@/type/login'
+import { getLoginAPI } from '@/api/loginAPI'
+import type { LoginType } from '@/type/loginTy'
 
  export const useLoginStore = defineStore('login', () => {
     // State
