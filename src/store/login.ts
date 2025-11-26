@@ -35,12 +35,24 @@ import type { LoginType } from '@/type/loginTy'
             throw error
         }
     }
+    // 退出登录
+    const logout = () => {
+        // 1.清空pinia状态
+        menu.value = [],
+        roles.value = [],
+        username.value = '',
+        token.value = '',
+        // 2.清空浏览器缓存
+        sessionStorage.clear()
+        localStorage.clear()
+    }
     // 暴露出去
     return {
         token,
         username,
         roles,
         menu,
-        login
+        login,
+        logout
     }
 })
