@@ -1,19 +1,19 @@
 import service from '@/utils/axios'
 
 
-interface ResponseData {
+interface ResponseData<T = any> {
     code:number,
-    data:string,
+    data:T,
     message:string
 }
 // 封装GET请求
-const get = (url:string,params:any):Promise<ResponseData> => {
+const get = <T=any>(url:string,params?:any):Promise<ResponseData<T>> => {
     return service.get(url,{params})
 }
 
 
 // 封装POST请求
-const post = (url:string,data?:any):Promise<ResponseData> => {
+const post = <T=any>(url:string,data?:any):Promise<ResponseData<T>> => {
     return service.post(url,data)
 }
 export { get, post }

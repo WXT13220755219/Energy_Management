@@ -160,27 +160,27 @@ const menulist2 = [
 //登录接口
 Mock.mock(/\/login/, "post", (options: any) => {
     const { username, password } = JSON.parse(options.body);
-    if (username === "admin" && password === "admin666") {
+    if (username === "admin" && password === "admin123") {
         return {
             code: 200,
             message: "登陆成功",
             data: {
                 token: "admintokenkkljbuo2w9xla2",
                 user: {
-                    username: "赖军",
+                    username: "雨菡",
                     roles: ["admin"],
                 },
                 menulist
             }
         }
-    } else if (username === "user" && password === "user666") {
+    } else if (username === "user" && password === "user123") {
         return {
             code: 200,
             message: "登陆成功",
             data: {
                 token: "usertokenkkljbuo2w9xla2",
                 user: {
-                    username: "江霞",
+                    username: "喜君",
                     roles: ["user"]
                 },
                 menulist: menulist2
@@ -194,6 +194,95 @@ Mock.mock(/\/login/, "post", (options: any) => {
     }
 })
 
+// 新增：设备运行状态接口
+Mock.mock(/\/deviceStatus/, 'get', () => {
+    return {
+        code: 200,
+        message: '操作成功',
+        data: {
+            list: [
+                {
+                    name: '充电桩使用率',
+                    icon: 'flash2', 
+                    usedCount: 2233,
+                    totalCount: 3698,
+                    faultCount: 9,
+                    rise: 24 // 增长率
+                },
+                {
+                    name: '充电柜使用率',
+                    icon: 'flash',
+                    usedCount: 655,
+                    totalCount: 1233,
+                    faultCount: 22,
+                    rise: 22
+                },
+                {
+                    name: '充电站使用率',
+                    icon: 'flash3',
+                    usedCount: 72,
+                    totalCount: 95,
+                    faultCount: 47,
+                    rise: 21
+                }
+            ]
+        }
+    };
+})
+
+// 新增：常用功能列表接口
+Mock.mock(/\/quickFunctions/, 'get', () => {
+    return {
+        code: 200,
+        message: '操作成功',
+        data: {
+            list: [
+                { 
+                    name: '充电站监控', 
+                    iconKey: 'repair', // 前端映射的Key
+                    bg: 'rgba(64, 158, 255, 0.1)', // 蓝色底
+                    path: '/chargingstation/monitor',
+                    badge: 0 
+                },
+                { 
+                    name: '营收统计', 
+                    iconKey: 'progress', 
+                    bg: 'rgba(103, 194, 58, 0.1)', // 绿色底
+                    path: '/chargingstation/revenue',
+                    badge: 0 
+                },
+                { 
+                    name: '充电桩监控', 
+                    iconKey: 'remain', 
+                    bg: 'rgba(230, 162, 60, 0.1)', // 橙色底
+                    path: '/chargingstation/fault',
+                    badge: 0 
+                },
+                { 
+                    name: '订单管理', 
+                    iconKey: 'total', 
+                    bg: 'rgba(245, 108, 108, 0.1)', // 红色底
+                    path: '/operations/orders',
+                    badge: 0 
+                },
+                { 
+                    name: '计费管理', 
+                    iconKey: 'money', 
+                    bg: 'rgba(144, 147, 153, 0.1)', // 灰色底
+                    path: '/operations/total',
+                    badge: 0 
+                },
+                { 
+                    name: '待办事项', 
+                    iconKey: 'daily', 
+                    bg: 'rgba(64, 158, 255, 0.1)', 
+                    path: '/system', 
+                    badge: 12 // 模拟有 12 条待办
+                }
+            ]
+        }
+    }
+})
 //echart图表接口 折线图
 Mock.mock(/\/chartData/, "get", () => {
     return {
