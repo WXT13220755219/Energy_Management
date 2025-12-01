@@ -5,7 +5,9 @@ const API = {
     ChartData2:'/chartData2',
     ChartData3:'/chartData3',
     DeviceStatus:'/deviceStatus',
-    QuickFunctions:'/quickFunctions',
+    QuickFunctions:'/quickFunctions', //常用功能
+    RevenueRank:'/revenueRank', //营收统计
+    FaultAlarm:'/faultAlarm', //故障列表
 }
 
 const getChartDataAPI = () => {
@@ -23,7 +25,12 @@ const getDeviceStatusAPI = () => {
 const getQuickFunctionsAPI = () => {
     return get(API.QuickFunctions)
 }
-
+const getRevenueRankAPI = () => {
+    return get(API.RevenueRank)
+}
+const getFaultAlarmAPI = () => {
+    return get(API.FaultAlarm)
+}
 
 export{
     getChartDataAPI,
@@ -31,4 +38,6 @@ export{
     getChartDataAPI3,
     getDeviceStatusAPI,
     getQuickFunctionsAPI,
+    getRevenueRankAPI,
+    getFaultAlarmAPI
 }

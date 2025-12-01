@@ -194,6 +194,7 @@ Mock.mock(/\/login/, "post", (options: any) => {
     }
 })
 
+// ============================== Dashboard 模块接口 ==============================
 // 新增：设备运行状态接口
 Mock.mock(/\/deviceStatus/, 'get', () => {
     return {
@@ -229,7 +230,6 @@ Mock.mock(/\/deviceStatus/, 'get', () => {
         }
     };
 })
-
 // 新增：常用功能列表接口
 Mock.mock(/\/quickFunctions/, 'get', () => {
     return {
@@ -284,7 +284,7 @@ Mock.mock(/\/quickFunctions/, 'get', () => {
     }
 })
 //echart图表接口 折线图
-Mock.mock(/\/chartData/, "get", () => {
+Mock.mock(/\/chartData($|\?)/, "get", () => {
     return {
         code: 200,
         message: "操作成功",
@@ -297,9 +297,8 @@ Mock.mock(/\/chartData/, "get", () => {
         }
     }
 })
-
 //echarts图表数据接口2 饼图
-Mock.mock(/\/chartData2/, 'get', () => {
+Mock.mock(/\/chartData2($|\?)/, 'get', () => {
     return {
         code: 200,
         message: '操作成功',
@@ -322,8 +321,78 @@ Mock.mock(/\/chartData3/, 'get', () => {
         }
     };
 })
+// 新增：营收统计 Top5 接口
+Mock.mock(/\/revenueRank/, 'get', () => {
+    return {
+        code: 200,
+        message: '操作成功',
+        data: {
+            list: [
+                { city: '上海', money: '8,542,100', rise: 12, status: 1 }, // status: 1上升, 0持平, -1下降
+                { city: '北京', money: '7,234,800', rise: 8, status: 1 },
+                { city: '深圳', money: '6,890,500', rise: -5, status: -1 },
+                { city: '广州', money: '5,670,200', rise: 2, status: 1 },
+                { city: '杭州', money: '4,320,900', rise: 0, status: 0 },
+                { city: '南京', money: '3,120,400', rise: 15, status: 1 }
+            ]
+        }
+    }
+})
+// 新增：故障报警列表接口
+Mock.mock(/\/faultAlarm/, 'get', () => {
+    return {
+        code: 200,
+        message: '操作成功',
+        data: {
+            list: [
+                {
+                    id: 1,
+                    title: '充电机过热报警',
+                    time: '10:23:45',
+                    type: 'danger', // 对应 el-timeline-item 的 type
+                    address: '北京西单充电站 02号桩'
+                },
+                {
+                    id: 2,
+                    title: '通讯连接中断',
+                    time: '09:15:20',
+                    type: 'warning',
+                    address: '上海陆家嘴充电站 05号桩'
+                },
+                {
+                    id: 3,
+                    title: '电压波动异常',
+                    time: '08:42:11',
+                    type: 'primary',
+                    address: '广州花城广场充电站 01号桩'
+                },
+                {
+                    id: 4,
+                    title: '急停按钮被按下',
+                    time: '昨天 23:10',
+                    type: 'info',
+                    address: '深圳大梅沙充电站 08号桩'
+                },
+                {
+                    id: 5,
+                    title: '急停按钮被按下',
+                    time: '昨天 23:10',
+                    type: 'warning',
+                    address: '深圳大梅沙充电站 08号桩'
+                },
+                {
+                    id: 6,
+                    title: '急停按钮被按下',
+                    time: '昨天 23:10',
+                    type: 'primary',
+                    address: '深圳大梅沙充电站 08号桩'
+                }
+            ]
+        }
+    }
+})
 
-
+// ============================== 充电站管理模块接口 ==============================
 //充电站监控接口
 let chargingStation = [
     {
