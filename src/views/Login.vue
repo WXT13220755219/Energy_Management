@@ -6,10 +6,10 @@
                 <h1 class="ml">动力港能源管理</h1>
             </div>
             <el-form :model="loginForm" :rules="rules" ref="formRef" @submit.prevent="handleLogin">
-                <el-form-item label="账号：" prop="username">
+                <el-form-item label="账号:" prop="username">
                     <el-input placeholder="请输入账号" v-model="loginForm.username" prefix-icon="User"></el-input>
                 </el-form-item>
-                <el-form-item label="密码：" prop="password">
+                <el-form-item label="密码:" prop="password">
                     <el-input placeholder="请输入密码" v-model="loginForm.password" prefix-icon="Lock" type="password" show-password ></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -39,7 +39,7 @@ const formRef = ref<FormInstance>()
 const rules = reactive({
     username:[
         { required:true, message:'请输入账号', trigger:'blur' },
-        { min:3, max:8, message:'不能小于3个，大于8个字符', trigger:'blur' }
+        { min:3, max:15, message:'不能小于3个，大于8个字符', trigger:'blur' }
     ],
     password:[
         { required:true, message:'不能为空', trigger:'blur' }

@@ -160,7 +160,7 @@ const menulist2 = [
 //登录接口
 Mock.mock(/\/login/, "post", (options: any) => {
     const { username, password } = JSON.parse(options.body);
-    if (username === "admin" && password === "admin123") {
+    if (username === "dongligang1" && password === "dongligang123") {
         return {
             code: 200,
             message: "登陆成功",
@@ -173,7 +173,7 @@ Mock.mock(/\/login/, "post", (options: any) => {
                 menulist
             }
         }
-    } else if (username === "user" && password === "user123") {
+    } else if (username === "dongligang2" && password === "dongligang456") {
         return {
             code: 200,
             message: "登陆成功",
@@ -2555,7 +2555,7 @@ Mock.mock(/\/cityList/, "get", () => {
     }
 })
 
-
+// =========================== Alarm =================================
 //报警管理-报警列表接口
 const alarmList = [
     {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { MapAdd } from '@/type/map/mapTy'
-import { addStationAPI } from '@/api/map'
+import { addStationAPI } from '@/api/mapAPI'
 
 export const useMapStore = defineStore('map', () => {
 

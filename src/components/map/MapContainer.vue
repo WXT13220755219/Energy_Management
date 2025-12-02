@@ -7,7 +7,7 @@ import { onMounted, onUnmounted } from 'vue'
 import AMapLoader from '@amap/amap-jsapi-loader'
 import stationImg from '@/assets/station.jpg'
 import flashIcon from '@/assets/flashIcon.png'
-import { getMapListAPI } from '@/api/map'
+import { getMapListAPI } from '@/api/mapAPI'
 
 // 保存地图实例和AMap构造函数命名空间
 let mapInstance: any = null
