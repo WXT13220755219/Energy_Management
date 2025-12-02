@@ -2310,6 +2310,40 @@ const stations = [
         count: 129,
     },
 ];
+
+// 新增：添加站点的 Mock 接口
+Mock.mock(/\/addStation/, 'post', (options: any) => {
+    const body = JSON.parse(options.body) // 解析前端传来的 JSON 数据
+    // [新增] 安全转换，如果转换失败则给一个默认坐标（比如北京），防止地图崩溃
+    let lng = Number(body.location1)
+    let lat = Number(body.location2)
+    
+    if (isNaN(lng) || isNaN(lat)) {
+        lng = 116.397428
+        lat = 39.90923
+    }
+    // 构造符合 stations 数组结构的新对象
+    const newStation = {
+        // 将经纬度字符串转换为数字数组 [lng, lat]
+        position: [Number(body.location1), Number(body.location2)], 
+        title: body.name,
+        status: body.now ? 1 : 2, // 模拟状态：1使用中，2维护中
+        count: 0, // 默认桩数
+        // 也可以加上 id 等其他字段
+        id: "TEMP" + new Date().getTime() 
+    }
+    
+    // 核心逻辑：将数据推入内存中的数组
+    // 只要不刷新页面，下次调用 /mapList 时就会包含这条数据
+    stations.push(newStation) 
+
+    return {
+        code: 200,
+        success: true,
+        message: "添加成功",
+        data: newStation
+    }
+})
 //电子地图接口
 Mock.mock(/\/mapList/, "post", () => {
     return {
