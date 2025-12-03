@@ -2631,34 +2631,59 @@ Mock.mock(/\/alarmList/, "get", () => {
     }
 })
 
+// ============================  Member ================================
 //会员卡管理接口
+// 1. 先生成一大批固定的静态数据（模拟数据库）
+const memberList = Mock.mock({
+    'list|100': [{ // 生成100条
+        'memberCardNumber': '@id',
+        'cardType|1': ["普通卡", "VIP卡", "季卡"],
+        'issueDate': '@date("yyyy-MM-dd")',
+        'holderName': '@cname',
+        'holderPhone': /^1[3-9]\d{9}$/,
+        'cardBalance': '@float(100, 10000, 2, 2)',
+        'transactionRecords|1-5': [{
+            'transactionDate': '@date("yyyy-MM-dd")',
+            'transactionAmount': '@float(10, 500, 2, 2)',
+            'transactionType|1': ["充电扣款", "服务费扣款", "停车费扣款"]
+        }],
+        'validUntil': '@date("yyyy-MM-dd")'
+    }]
+}).list;
+
+// 2. 修改接口逻辑，实现真正的“查询”和“分页”
 Mock.mock(/\/member/, 'post', (req: any) => {
     const { page, pageSize, no, tel, name } = JSON.parse(req.body);
-    console.log("会员管理接口", page, pageSize, no, tel, name)
+    
+    // Step 1: 过滤 (Search)
+    let mockList = memberList.filter((item: any) => {
+        // 如果有名字，且名字不包含搜索词，就过滤掉
+        if (name && item.holderName.indexOf(name) === -1) return false;
+        // 如果有卡号，且卡号不包含搜索词，就过滤掉
+        if (no && item.memberCardNumber.indexOf(no) === -1) return false;
+        // 如果有电话，且电话不包含搜索词，就过滤掉
+        if (tel && item.holderPhone.indexOf(tel) === -1) return false;
+        return true;
+    });
+
+    // Step 2: 分页 (Pagination)
+    const total = mockList.length; // 过滤后的总条数
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const list = mockList.slice(start, end); // 切割数组
+
     return {
         "code": 200,
         "message": "操作成功",
-        data: Mock.mock({
-            [`list|${pageSize}`]: [{
-                'memberCardNumber': '@id',  // 会员卡号
-                'cardType|1': ["普通卡", "VIP卡", "季卡"],  // 卡类型
-                'issueDate': '@date("yyyy-MM-dd")',  // 开卡日期
-                'holderName': '@cname',  // 持有人姓名
-                'holderPhone': /^1[3-9]\d{9}$/,  // 持有人电话
-                'cardBalance': '@float(100, 10000, 2, 2)',  // 卡余额
-                'transactionRecords|1-5': [{  // 消费记录
-                    'transactionDate|1': ["2024-02-18", "2024-04-08", "2024-10-03", "2024-10-15"],  // 消费日期
-                    'transactionAmount': '@float(10, 500, 2, 2)',  // 消费金额
-                    'transactionType|1': ["充电扣款", "服务费扣款", "停车费扣款", "其他"]  // 消费类型
-                }],
-                'validUntil': '@date("yyyy-MM-dd")'  // 有效期至
-            }],
-            total: 53
-        })
+        data: {
+            list: list,
+            total: total
+        }
     }
 });
 
 
+// ==================================   ============================================
 //招商管理分类列表接口
 Mock.mock(/\/document/, "get", () => {
     return {

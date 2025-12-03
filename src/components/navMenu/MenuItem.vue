@@ -38,7 +38,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineOptions } from 'vue'
 import type { MenuItem } from '@/type/menuTy'
 import { useTabsStore } from '@/store/tabs'
 

@@ -1,66 +1,90 @@
 <template>
-  <!-- logo -->
-   <div class="logo">
-    <img :src="logo" width="34px" height="34px" >
-    <h1>动力港</h1>
-   </div>
-   <!-- 菜单容器 -->
-    <!-- router: 开启 vue-router 模式，index 直接作为 path 跳转 -->
-   <el-menu
-      active-text-color="#409EFF"
-      background-color="#FFFFFF"
-      class="el-menu-vertical-demo"
-      :default-active="route.path"
-      text-color="#303133"
-      :router="true"
-      :unique-opened="true"
-      :collapse-transition="false"
+    <div class="logo">
+        <img :src="logo" width="32px" height="32px">
+        <h1>动力港</h1>
+    </div>
+    
+    <el-menu 
+        :router="true" 
+        :default-active="$route.path"
+        class="custom-menu"
     >
-      <menu-item 
-        v-for="item in menuList"
-        :key="item.url"
-        :item="item"
-      />
-   </el-menu>
+        <menu-item 
+            v-for="item in menuList" 
+            :item="item" 
+            :key="item.url"
+        ></menu-item>
+    </el-menu>
 </template>
 
 <script lang="ts" setup>
 import logo from '@/assets/logo.png'
 import { useRoute } from 'vue-router'
-import { useLoginStore } from '@/store/login'
 import { computed } from 'vue'
-import  MenuItem  from '@/components/navMenu/MenuItem.vue'
+// 1. 引入组件
+import MenuItem from '@/components/navMenu/MenuItem.vue'
+// 2. 引入正确的 Store (根据你提供的文件列表，store是 auth.ts)
+import { useLoginStore } from '@/store/login'
 
 const route = useRoute()
-const loginStore = useLoginStore()
-// 从pinia获取登录后存储的菜单数据
-const menuList = computed(()=>loginStore.menu)
+const userStore = useLoginStore() // 使用 userStore
+
+// 3. 从 store 获取菜单数据
+// 确保 store 里有 menu 这个属性，并且已经 populated 了数据
+const menuList = computed(() => userStore.menu)
 </script>
 
 <style scoped lang="less">
-.logo{
-  display: flex;
-  justify-content: center; //水平居中
-  align-items: center;
-  height: 60px;
-  background-color: #F5F7FA;
-}
-h1{
-  color: #303133;
-  margin-left: 10px;
-  font-size: 25px;
-  white-space: nowrap;
-}
-.el-menu{
-  border-right:none;
-}
-/* 选中和悬停样式优化 */
-:deep(.el-menu-item:hover) {
-  background-color: rgb(220, 231, 244) !important;
-  color: #fff !important;
-}
-:deep(.is-active) {
-  background-color: rgb(200, 201, 202) !important;
-  color: #fff !important;
-}
+    .logo {
+        display: flex;
+        align-items: center;
+        padding-left: 24px;
+        height: 60px;
+        border-bottom: 1px solid #f0f0f0;
+        
+        h1 {
+            color: #1f2d3d;
+            font-size: 20px;
+            font-weight: 700;
+            margin-left: 12px;
+            font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', sans-serif;
+        }
+    }
+
+    .custom-menu {
+        border-right: none;
+        padding: 10px;
+        
+        /* 胶囊样式优化 */
+        :deep(.el-menu-item), :deep(.el-sub-menu__title) {
+            border-radius: 8px;
+            margin-bottom: 4px;
+            height: 50px;
+            line-height: 50px;
+            color: #606266;
+            
+            &:hover {
+                background-color: #f5f7fa;
+                color: #409eff;
+            }
+        }
+
+        :deep(.el-menu-item.is-active) {
+            background-color: #e6f7ff !important;
+            color: #1890ff !important;
+            font-weight: 600;
+            
+            &::before {
+                content: "";
+                position: absolute;
+                left: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 4px;
+                height: 16px;
+                background-color: #1890ff;
+                border-radius: 2px;
+            }
+        }
+    }
 </style>
