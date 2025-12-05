@@ -58,33 +58,88 @@ const handleLogin = () => {
 }
 </script>
 
-<style scoped>
-.bg{
-    background-image:url('../assets/bg.png');
-    background-position: center; /* 背景图居中显示 */
-    background-size: cover; /* 让背景图始终铺满屏幕，不留白 */
-    background-repeat: no-repeat; 
-    height: 100vh; /* 容器高度 = 视口高度，保证全屏背景 */
+<style scoped lang="less">
+.bg {
+    width: 100%;
+    height: 100vh;
+    background-image: url('../assets/bg.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+    /* === 修改开始：调整布局位置 === */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: flex-start; /* 水平方向：从左开始排列 (之前是 center) */
+    padding-left: 10%; /* 核心：左侧留出 10% 的空白，还原原来的偏左位置 */
+    box-sizing: border-box; /* 防止 padding 导致出现横向滚动条 */
+    /* === 修改结束 === */
+
     .login {
-        width: 500px;
-        height: 300px;
-        padding: 50px;
-        box-shadow: 0 0 10px 10px #f4f4f4; /* 四周浅灰色阴影，制造悬浮卡片效果 */
-        text-align: center; /* 内部行内元素水平居中 */
-        position: absolute; /* 绝对定位，方便自由摆放 */
-        top: 50%; /* 垂直方向居中第一步 */
-        left: 10%;  /* 左侧留出 10% 视口宽度，偏左放置 */
-        margin-top: -200px;  /* 垂直居中第三步：往上偏移自身高度一半（300/2+50padding≈200） */
-        .logo{
+        width: 420px;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 40px 50px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        text-align: center;
+
+        .logo {
             display: flex;
-            justify-content: center; /* 水平居中 */
-            align-content: center; /* 垂直居中 */
-            margin-bottom: 40px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            
+            h1 {
+                color: #0e3594;
+                font-size: 24px;
+                margin-left: 10px;
+                font-weight: 600;
+                letter-spacing: 1px;
+            }
         }
     }
-    h1 {
-        color: rgb(14, 53, 148); /* 深蓝主题色 */
-        margin-top: 10px;
+}
+
+/* 以下输入框美化样式保持不变 */
+:deep(.el-input__wrapper) {
+    background-color: #f5f7fa;
+    border-radius: 20px;
+    padding: 5px 15px;
+    box-shadow: none !important;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+    background-color: #fff;
+    border-color: #409eff;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2) !important;
+}
+
+:deep(.el-button--primary) {
+    width: 100%;
+    height: 44px;
+    border-radius: 22px;
+    font-size: 16px;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #2b5876 0%, #4e4376 100%);
+    border: none;
+    margin-top: 10px;
+    
+    &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+}
+
+:deep(.el-input input:-webkit-autofill) {
+    -webkit-box-shadow: 0 0 0px 1000px #f5f7fa inset !important;
+    -webkit-text-fill-color: #333 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+:deep(.el-input__wrapper.is-focus input:-webkit-autofill) {
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
 }
 </style>

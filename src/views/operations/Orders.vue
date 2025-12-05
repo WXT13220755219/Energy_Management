@@ -182,7 +182,16 @@ const handleSelectionChange = (val:OrderType[]) => {
 // 处理批量删除
 const handleBatchDelete = async () => {
   try{
-    await ElMessageBox.confirm(`确认要删除选中的${selectedRows.value.length}条订单吗？`, '提示',{type:'warning'})
+    await ElMessageBox.confirm(
+      `确认要删除选中的${selectedRows.value.length}条订单吗？`, '提示',
+      {
+        type:'warning',
+        confirmButtonText:'确认删除',
+        cancelButtonText:'取消',
+        buttonSize:'small'
+      }
+    
+    )
     // 提取选中的订单号
     const ids = selectedRows.value.map(item => item.orderNo)
     const res = await getBatchDeleteAPI(ids)

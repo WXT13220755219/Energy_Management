@@ -10,14 +10,24 @@ interface SystemType {
 }
 
 const API = {
-    System: '/permissionList'
+    System: '/permissionList',
+    GetUserAuth: '/userAuth',
+    SetAuth: '/setAuth'
 }
 
 const getSystemAPI = (data:SystemType) => {
     return post(API.System,data)
 }
+const getUserAuthAPI = (data:{pageAuthority:string}) => {
+    return post(API.GetUserAuth, data)
+}
+const getSetAuthAPI = (data: {btnList:any[], pageList:any[], account:string}) => {
+    return post(API.GetUserAuth, data)
+}
 
 export {
     type SystemType,
-    getSystemAPI
+    getSystemAPI,
+    getUserAuthAPI,
+    getSetAuthAPI
 }
