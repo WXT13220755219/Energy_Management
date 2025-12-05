@@ -2353,7 +2353,7 @@ Mock.mock(/\/mapList/, "post", () => {
     }
 })
 
-// ================================= Order ==========================================
+// ================================= 订单管理 Order ==========================================
 
 //订单管理接口
 Mock.mock(/\/orderList/, 'post', (options: any) => {
@@ -2556,7 +2556,7 @@ Mock.mock(/\/cityList/, "get", () => {
     }
 })
 
-// =========================== Alarm =================================
+// =========================== 报警管理 Alarm =================================
 //报警管理-报警列表接口
 const alarmList = [
     {
@@ -2632,7 +2632,7 @@ Mock.mock(/\/alarmList/, "get", () => {
     }
 })
 
-// ============================  Member ================================
+// ============================  会员卡管理 Member ================================
 //会员卡管理接口
 // 1. 先生成一大批固定的静态数据（模拟数据库）
 const memberList = Mock.mock({
@@ -2684,20 +2684,76 @@ Mock.mock(/\/member/, 'post', (req: any) => {
 });
 
 
-// ==================================    ============================================
-//招商管理分类列表接口
-Mock.mock(/\/document/, "get", () => {
+// ==================================  招商管理 Document  ============================================
+
+// 1. 生成模拟列表数据 (模拟数据库)
+// Mock.mock 会根据规则生成随机数据
+const documentList = Mock.mock({
+    'list|15': [{ // 生成 15 条数据
+        'id': '@increment', // 自增 ID
+        'title': '@ctitle(8, 20)', // 随机生成 8-20 字的中文标题
+        'type|1': ["招商类", "广告类", "公告类", "提示类", "日常类"], // 随机从数组中取一个
+        'level|1': ["一级", "二级", "三级"],
+        'date': '@date("yyyy-MM-dd")', // 随机日期
+        'content': '@cparagraph(3, 5)', // 随机生成 3-5 段中文文本作为内容
+        'publisher': '@cname', // 随机生成发布人姓名
+        'readCount|100-5000': 100 // 随机阅读量
+    }]
+}).list;
+
+// 2. 获取文档列表接口 (支持分页和标题搜索)
+Mock.mock(/\/document\/list/, 'post', (options:any) => {
+    // 解析前端传来的参数
+    const { page, pageSize, title } = JSON.parse(options.body)
+    
+    // a. 过滤逻辑：如果有标题参数，就进行模糊搜索
+    let result = documentList.filter((item: any) => {
+        if (title && item.title.indexOf(title) === -1) return false
+        return true
+    })
+    
+    // b. 分页逻辑：计算开始和结束的索引
+    const total = result.length
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+    const list = result.slice(start, end) // 切割数组
+    
     return {
         code: 200,
-        message: "操作成功",
+        message: '获取成功',
         data: {
-            article: ["招商类", "广告类", "公告类", "提示类", "日常类", "告警类", "其他"],//文章类型
-            important: ["一级", "二级", "三级", "四级"],//重要程度
-            publish: ["站内信", "公众号", "小程序", "H5", "官网"]//发布渠道
+            list,
+            total
         }
     }
 })
-// ==================================  System  ============================================
+
+// 3. 发布/新增文章接口
+Mock.mock(/\/document\/add/, 'post', (options:any) => {
+    const body = JSON.parse(options.body)
+    
+    // 构造新数据对象
+    const newItem = {
+        id: Mock.mock('@increment'), // 生成一个新ID
+        title: body.title,
+        type: body.type,
+        level: body.level,
+        content: body.content,
+        date: Mock.mock('@now("yyyy-MM-dd")'), // 使用当前日期
+        publisher: '管理员', // 模拟当前登录人
+        readCount: 0
+    }
+    
+    // 将新数据插入到数组的最前面 (unshift)
+    documentList.unshift(newItem)
+    
+    return {
+        code: 200,
+        message: '发布成功',
+        data: null
+    }
+})
+// ==================================  系统设置 System  ============================================
 // 自定义生成随机账号函数
 Mock.Random.extend({
     account: function () {
