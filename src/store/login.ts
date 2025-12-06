@@ -10,6 +10,7 @@ import type { LoginType } from '@/type/loginTy'
     const roles = ref<string[]>(sessionStorage.getItem('roles')?JSON.parse(sessionStorage.getItem('roles')!):[])
     const username = ref<string>(sessionStorage.getItem('username') || '')
     const menu = ref<any[]>(sessionStorage.getItem('menu')?JSON.parse(sessionStorage.getItem('menu')!):[])
+    const account = ref<string>(sessionStorage.getItem('account') || '')
     // Actions
     // 登录动作
     const login = async(data:LoginType) => {
@@ -22,11 +23,13 @@ import type { LoginType } from '@/type/loginTy'
             username.value = user.username
             roles.value = user.roles
             menu.value = menulist
+            account.value = user.account
             // 3.持久化存储到SessionStorage（手动同步）
             sessionStorage.setItem('token',accessToken)
             sessionStorage.setItem('username',user.username)
             sessionStorage.setItem('roles',JSON.stringify(user.roles))
             sessionStorage.setItem('menu',JSON.stringify(menulist))
+            sessionStorage.setItem('account',user.account)
             // 返回结果供组件判断
             return res
 
@@ -42,6 +45,7 @@ import type { LoginType } from '@/type/loginTy'
         roles.value = [],
         username.value = '',
         token.value = '',
+        account.value = ''
         // 2.清空浏览器缓存
         sessionStorage.clear()
         localStorage.clear()
@@ -53,6 +57,7 @@ import type { LoginType } from '@/type/loginTy'
         roles,
         menu,
         login,
-        logout
+        logout,
+        account
     }
 })

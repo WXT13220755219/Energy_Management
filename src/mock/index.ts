@@ -168,6 +168,7 @@ Mock.mock(/\/login/, "post", (options: any) => {
                 token: "admintokenkkljbuo2w9xla2",
                 user: {
                     username: "雨菡",
+                    account: "dongligang1",
                     roles: ["admin"],
                 },
                 menulist
@@ -181,7 +182,8 @@ Mock.mock(/\/login/, "post", (options: any) => {
                 token: "usertokenkkljbuo2w9xla2",
                 user: {
                     username: "喜君",
-                    roles: ["user"]
+                    roles: ["user"],
+                    account: "dongligang2"
                 },
                 menulist: menulist2
             }
@@ -2859,6 +2861,63 @@ Mock.mock(/\/setAuth/, "post", (req: any) => {
     return {
         code: 200,
         message: "操作成功",
+        data: null
+    }
+})
+
+
+
+// ============================ 个人中心 Personal ================================
+
+// 1. 获取个人详细信息
+Mock.mock(/\/personal\/info/, 'get', () => {
+    return {
+        code: 200,
+        message: "操作成功",
+        data: {
+            name: "雨菡",
+            // 使用随机头像服务
+            avatar: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png", 
+            role: "高级系统管理员",
+            department: "技术研发中心 - 前端组",
+            account: "admin_yuhan",
+            phone: "17876554801",
+            email: "yuhan.dev@energy.com",
+            location: "北京市朝阳区望京SOHO",
+            joinDays: 865,
+            completeness: 85, 
+            'tags|4-6': [{ // 随机生成 4-6 个标签
+                'label|1': ['技术控', 'Vue3', '全栈', '细节控', '加班狂', '开源贡献者', 'TS专家'],
+                'type|1': ['', 'success', 'warning', 'danger', 'info']
+            }]
+        }
+    }
+})
+
+// 2. 获取个人操作动态 (生成 8-15 条随机数据)
+Mock.mock(/\/personal\/activities/, 'get', () => {
+    return {
+        code: 200,
+        message: "获取成功",
+        data: {
+            list: Mock.mock({
+                'list|8-15': [{
+                    'id|+1': 1,
+                    'title|1': ['登录系统', '代码提交', '处理工单', '发布公告', '权限变更', '导出报表'],
+                    'content': '@csentence(12, 30)', // 随机中文句子
+                    'timestamp': '@datetime("yyyy-MM-dd HH:mm")',
+                    'type|1': ['primary', 'success', 'warning', 'danger', 'info'],
+                }]
+            }).list.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        }
+    }
+})
+
+// 3. 更新基本信息
+Mock.mock(/\/personal\/update/, 'post', () => {
+    return {
+        code: 200,
+        message: "更新成功",
         data: null
     }
 })
