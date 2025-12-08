@@ -2,7 +2,7 @@
     <div class="bg">
         <div class="login">
             <div class="logo">
-                <img :src="logo" width="70px" height="70px">
+                <img :src="logoImage" width="70px" height="70px">
                 <h1 class="ml">动力港能源管理</h1>
             </div>
             <el-form :model="loginForm" :rules="rules" ref="formRef" @submit.prevent="handleLogin">
@@ -13,9 +13,22 @@
                     <el-input placeholder="请输入密码" v-model="loginForm.password" prefix-icon="Lock" type="password" show-password ></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" style="width:100%;" @click="handleLogin" native-type="submit">登录</el-button>
+                    <el-button type="primary" style="width:100%;" @click="handleLogin" :loading="loading" native-type="submit">登录</el-button>
                 </el-form-item>
             </el-form>
+
+            <div class="demo-account-box">
+                <p class="tip-title">演示账号 (点击一键填充)：</p>
+                <div class="account-item" @click="fillAccount('dongligang1', 'dongligang123')">
+                    <el-tag type="success" size="small" effect="dark">管理员</el-tag>
+                    <span>dongligang1 / 123</span>
+                </div>
+                <div class="account-item" @click="fillAccount('dongligang2', 'dongligang456')">
+                    <el-tag type="" size="small" effect="dark">运营员</el-tag>
+                    <span>dongligang2 / 456</span>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -26,11 +39,13 @@ import logo from '@/assets/logo.png'
 import type{ FormInstance } from 'element-plus'
 import  { useLoginStore }  from '@/store/login'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus' // 引入提示
 
 interface LoginRulesType {
     username:string,
     password:string
 }
+const logoImage = ref(logo)
 const loginForm = reactive<LoginRulesType>({
     username:'',
     password:''
@@ -48,17 +63,35 @@ const rules = reactive({
 
 const router = useRouter()
 const loginStore = useLoginStore()
+const loading = ref(false) // 增加一个loading状态
+
 const handleLogin = () => {
     formRef.value?.validate( async(valid:boolean) => {
         if(valid){
-            await loginStore.login(loginForm)
-            router.push('/')
+            loading.value = true
+            try {
+                await loginStore.login(loginForm)
+                ElMessage.success('登录成功')
+                router.push('/')
+            } catch (e) {
+                // 错误处理交由拦截器或在此处理
+            } finally {
+                loading.value = false
+            }
         }
     } )
+}
+
+// [新增] 填充账号的方法
+const fillAccount = (u: string, p: string) => {
+    loginForm.username = u
+    loginForm.password = p
+    ElMessage.info(`已填充${u.includes('1') ? '管理员' : '运营员'}账号`)
 }
 </script>
 
 <style scoped lang="less">
+/* ... 原有的 .bg 样式保持不变 ... */
 .bg {
     width: 100%;
     height: 100vh;
@@ -67,13 +100,11 @@ const handleLogin = () => {
     background-size: cover;
     background-repeat: no-repeat;
     
-    /* === 修改开始：调整布局位置 === */
     display: flex;
-    align-items: center; /* 垂直居中 */
-    justify-content: flex-start; /* 水平方向：从左开始排列 (之前是 center) */
-    padding-left: 10%; /* 核心：左侧留出 10% 的空白，还原原来的偏左位置 */
-    box-sizing: border-box; /* 防止 padding 导致出现横向滚动条 */
-    /* === 修改结束 === */
+    align-items: center; 
+    justify-content: flex-start; 
+    padding-left: 10%; 
+    box-sizing: border-box; 
 
     .login {
         width: 420px;
@@ -84,11 +115,11 @@ const handleLogin = () => {
         text-align: center;
 
         .logo {
+            /* ... 保持不变 ... */
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 30px;
-            
             h1 {
                 color: #0e3594;
                 font-size: 24px;
@@ -97,7 +128,53 @@ const handleLogin = () => {
                 letter-spacing: 1px;
             }
         }
+        
+        /* [新增] 演示账号样式 */
+        .demo-account-box {
+            margin-top: 25px;
+            border-top: 1px dashed #dcdfe6;
+            padding-top: 15px;
+            text-align: left;
+            
+            .tip-title {
+                font-size: 12px;
+                color: #909399;
+                margin-bottom: 10px;
+            }
+            
+            .account-item {
+                display: flex;
+                align-items: center;
+                background: #f4f6f8;
+                padding: 8px 12px;
+                border-radius: 6px;
+                margin-bottom: 8px;
+                cursor: pointer;
+                transition: all 0.3s;
+                
+                &:hover {
+                    background: #ecf5ff;
+                    transform: translateX(5px);
+                }
+                
+                span {
+                    font-size: 13px;
+                    color: #606266;
+                    margin-left: 10px;
+                    font-family: monospace; /* 等宽字体显示密码更清晰 */
+                }
+            }
+        }
     }
+}
+
+:deep(.el-input__wrapper) {
+    background-color: #f5f7fa;
+    border-radius: 20px;
+    padding: 5px 15px;
+    box-shadow: none !important;
+    border: 1px solid transparent;
+    transition: all 0.3s;
 }
 
 /* 以下输入框美化样式保持不变 */

@@ -1,13 +1,18 @@
 <template>
   <el-card shadow="hover" class="profile-card" :body-style="{ padding: '0px' }">
+    
     <div class="user-header-bg">
-      <div class="greeting-text">{{ greeting }}，{{ userInfo.name  || '用户'}}，愿你今天充满活力！</div>
+      <div class="greeting-text">
+        {{ greeting }}，{{ userInfo.name  || '用户'}}，愿你今天充满活力！
+      </div>
     </div>
     
     <div class="profile-content">
+      
       <div class="avatar-wrapper">
         <el-avatar :size="100" :src="userInfo.avatar" class="user-avatar" />
       </div>
+      
       <div class="user-name">{{ userInfo.name }}</div>
       <div class="user-role">{{ userInfo.role }} | {{ userInfo.department }}</div>
       
@@ -68,13 +73,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { PersonalInfoType } from '@/type/personalTy'
-import { Plus, Delete, Warning, CircleCheck } from '@element-plus/icons-vue'
-
-const props = defineProps<{
+// 解释：defineProps 是编译宏，声明的 userInfo 会自动暴露给 template 使用
+defineProps<{
   userInfo: PersonalInfoType
 }>()
 
-// 计算问候语
+// 计算属性：根据当前小时返回问候语
 const greeting = computed(() => {
   const hour = new Date().getHours()
   if (hour < 6) return '夜深了'
@@ -88,45 +92,95 @@ const greeting = computed(() => {
 </script>
 
 <style scoped lang="less">
+/* 工具类：统一间距 */
 .mt { margin-top: 20px; }
 .mx-1 { margin: 0 4px; }
 
 .profile-card {
   border: none;
-  border-radius: 8px;
-  transition: all 0.3s;
-  &:hover { transform: translateY(-5px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); }
+  border-radius: 8px; /* 圆角 */
+  transition: all 0.3s; /* 过渡动画，让hover效果更丝滑 */
+  
+  /* 鼠标悬停时上浮并加深阴影 */
+  &:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+  }
 
   .user-header-bg {
     height: 140px;
+    /* CSS 渐变背景：从左上(135deg)开始，由蓝紫色过渡到深紫色 */
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    position: relative;
+    position: relative; /* 为子元素的 absolute 定位提供基准 */
+    
     .greeting-text {
-      position: absolute; top: 24px; left: 24px; color: rgba(255,255,255,0.95);
-      font-size: 16px; font-weight: 500; letter-spacing: 1px;
+      position: absolute; 
+      top: 24px; 
+      left: 24px; 
+      color: rgba(255,255,255,0.95); /* 白色半透明，看起来更柔和 */
+      font-size: 16px; 
+      font-weight: 500; 
+      letter-spacing: 1px; /* 字间距 */
     }
   }
 
   .profile-content {
-    padding: 0 24px 24px; position: relative; text-align: center;
+    padding: 0 24px 24px; 
+    position: relative; 
+    text-align: center; /* 让内部文本默认居中 */
+    
     .avatar-wrapper {
-      margin-top: -60px; margin-bottom: 16px; position: relative; display: inline-block;
-      .user-avatar { border: 4px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15); background-color: #fff; }
+      margin-top: -60px; /* 负外边距：让头像向上移动，产生压在背景图上的层叠效果 */
+      margin-bottom: 16px; 
+      position: relative; 
+      display: inline-block;
+      
+      .user-avatar { 
+        border: 4px solid #fff; /* 白色边框，区分头像和背景 */
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15); 
+        background-color: #fff; 
+      }
     }
+    
     .user-name { font-size: 24px; font-weight: 700; color: #303133; margin-bottom: 6px; }
     .user-role { font-size: 14px; color: #909399; }
     
     .progress-section {
-      text-align: left; background: #f8f9fa; padding: 15px; border-radius: 8px;
-      .label-row { display: flex; justify-content: space-between; font-size: 13px; color: #606266; margin-bottom: 6px; }
+      text-align: left; 
+      background: #f8f9fa; /* 浅灰背景，区分区块 */
+      padding: 15px; 
+      border-radius: 8px;
+      
+      .label-row { 
+        display: flex; /* Flex布局 */
+        justify-content: space-between; /* 两端对齐 */
+        font-size: 13px; 
+        color: #606266; 
+        margin-bottom: 6px; 
+      }
     }
 
     .detail-list {
-      text-align: left; margin-top: 20px;
+      text-align: left; 
+      margin-top: 20px;
+      
       .detail-item {
-        display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px dashed #f0f2f5; font-size: 14px;
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; /* 垂直居中 */
+        padding: 14px 0; 
+        border-bottom: 1px dashed #f0f2f5; /* 虚线分割 */
+        font-size: 14px;
+        
+        /* 最后一个元素去掉底边框 */
         &:last-child { border-bottom: none; }
-        .label { display: flex; align-items: center; color: #606266; .el-icon { margin-right: 8px; font-size: 16px; color: #409eff;} }
+        
+        .label { 
+          display: flex; 
+          align-items: center; 
+          color: #606266; 
+          .el-icon { margin-right: 8px; font-size: 16px; color: #409eff;} 
+        }
         .value { color: #303133; font-weight: 500; }
       }
     }

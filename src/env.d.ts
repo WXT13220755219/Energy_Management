@@ -12,3 +12,8 @@ declare module '@wangeditor/editor-for-vue' {
     const Toolbar: DefineComponent<{}, {}, any>
     export { Editor, Toolbar }
 }
+// --- 在这里添加 png 的声明 ---
+declare module '*.png' {
+    const value: string;
+    export default value;
+}

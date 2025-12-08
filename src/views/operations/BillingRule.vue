@@ -17,7 +17,7 @@
       <el-table :data="tableData" v-loading="loading" stripe>
         <el-table-column type="index" label="#" width="50" align="center" />
         
-        <el-table-column prop="ruleName" label="规则名称" min-width="180" show-overflow-tooltip>
+        <el-table-column prop="ruleName" label="规则名称" min-width="180" align="center" show-overflow-tooltip>
            <template #default="scope">
              <span class="text-bold">{{ scope.row.ruleName }}</span>
            </template>
@@ -83,19 +83,15 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getBillingRuleListAPI, saveBillingRuleAPI, deleteBillingRuleAPI } from '@/api/billingAPI'
 import type { BillingRuleType, BillingParamsType } from '@/type/billingTy'
-// 引入子组件
 import BillingRuleDialog from './components/BillingRuleDialog.vue'
 
 // --- 状态定义 ---
 const loading = ref(false)
 const tableData = ref<BillingRuleType[]>([])
 const total = ref(0)
-
-// 弹窗控制
 const dialogVisible = ref(false)
 const currentRow = ref<BillingRuleType | undefined>(undefined)
 
-// 搜索参数
 const searchParams = reactive<BillingParamsType>({
     page: 1,
     pageSize: 10,
@@ -103,8 +99,6 @@ const searchParams = reactive<BillingParamsType>({
 })
 
 // --- 业务逻辑 ---
-
-// 1. 加载列表
 const loadData = async () => {
     loading.value = true
     try {
@@ -120,33 +114,25 @@ const loadData = async () => {
     }
 }
 
-// 2. 新建
 const handleCreate = () => {
-    currentRow.value = undefined // 传递空数据给子组件
+    currentRow.value = undefined 
     dialogVisible.value = true
 }
 
-// 3. 编辑
 const handleEdit = (row: BillingRuleType) => {
-    // 传递当前行数据
     currentRow.value = row
     dialogVisible.value = true
 }
 
-// 4. 复制
 const handleCopy = (row: BillingRuleType) => {
-    // 构造一个"副本"数据传给子组件
-    // 注意：这里我们手动把 id 去掉，并修改名称，这样子组件会识别为"新增"但带有预设数据
     const copyData = JSON.parse(JSON.stringify(row))
-    copyData.id = '' // 清空ID
+    copyData.id = '' 
     copyData.ruleName = `${row.ruleName}_副本`
-    
     currentRow.value = copyData
     dialogVisible.value = true
     ElMessage.success('已载入模板数据，保存后生效')
 }
 
-// 5. 删除
 const handleDelete = async (row: BillingRuleType) => {
     try {
         await ElMessageBox.confirm(`确认删除规则 "${row.ruleName}" 吗？此操作不可恢复。`, '删除警告', { 
@@ -154,29 +140,21 @@ const handleDelete = async (row: BillingRuleType) => {
             confirmButtonText: '确认删除',
             cancelButtonText: '取消'
         })
-        
-        // 这里的 id 需要断言或确保存在
         if(row.id) {
             const res: any = await deleteBillingRuleAPI([row.id])
             if(res.code === 200) {
                 ElMessage.success('删除成功')
-                loadData() // 刷新列表
+                loadData() 
             }
         }
-    } catch(e) {
-        // 用户取消或API错误
-    }
+    } catch(e) {}
 }
 
-// 6. 状态切换
 const handleStatusChange = async (row: BillingRuleType) => {
     try {
-        // 直接调用保存接口更新状态
-        // 注意：Mock 接口里我们是把整个对象传进去覆盖的，这符合 saveBillingRuleAPI 的逻辑
         await saveBillingRuleAPI(row)
         ElMessage.success(`状态已更新`)
     } catch(e) {
-        // 如果失败，回滚状态（简单处理：刷新列表）
         row.status = row.status === 1 ? 0 : 1
         ElMessage.error('更新状态失败')
     }
@@ -186,6 +164,19 @@ onMounted(() => loadData())
 </script>
 
 <style scoped lang="less">
+/* 修改点3: 新增 .search-form 样式，强制 Flex 布局并垂直居中 */
+.search-form {
+  display: flex;
+  align-items: center; /* 关键：垂直居中 */
+  flex-wrap: wrap;     /* 防止屏幕缩放时换行错乱 */
+  
+  /* 修复 el-form-item 默认 margin 可能导致的微小偏差 */
+  :deep(.el-form-item) {
+    margin-bottom: 0;
+    margin-right: 18px; /* 给表单项之间增加一点间距，如果默认不够的话 */
+  }
+}
+
 .mt-20 { margin-top: 20px; }
 .text-bold { font-weight: 600; color: #303133; }
 .text-gray { color: #909399; }
