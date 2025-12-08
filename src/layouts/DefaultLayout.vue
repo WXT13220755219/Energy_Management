@@ -1,11 +1,14 @@
 <template>
   <el-container>
-      <el-aside width="200px">
-        <Menu></Menu>
+      <el-aside :width=" isCollapse ? '0px' :'200px'">
+        <Menu :is-collapse="isCollapse"></Menu>
       </el-aside>
       <el-container>
           <el-header>
-            <TopHeader />
+            <TopHeader 
+              :is-collapse="isCollapse"
+              @toggle-collapse="handleToggleCollapse"
+            />
           </el-header>
           <el-main>
             <TabsLayout />
@@ -15,11 +18,18 @@
 </template>
 
 <script lang="ts" setup>
-
+import { ref } from 'vue'
 import Menu from '@/components/navMenu/Menu.vue'
 import TopHeader from '@/components/topHeader/TopHeader.vue'
 import TabsLayout from './TabsLayout.vue'
 
+//  定义侧边栏折叠状态，默认不折叠 (false)
+const isCollapse = ref(false)
+
+//  处理折叠切换事件
+const handleToggleCollapse = () => {
+  isCollapse.value = !isCollapse.value
+}
 </script>
 
 <style scoped>

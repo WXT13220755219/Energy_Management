@@ -1,7 +1,7 @@
 <template>
     <div class="logo-container">
-        <img :src="logo" class="logo-img">
-        <h1 class="logo-text">动力港</h1>
+        <img :src="logoImage" class="logo-img">
+        <h1 class="logo-text" v-show="!isCollapse">动力港</h1>
     </div>
     
     <div class="menu-scroll-wrapper">
@@ -9,7 +9,9 @@
             :router="true" 
             :default-active="$route.path"
             class="custom-menu"
-            :unique-opened="true" 
+            :unique-opened="true"
+            :collapse="isCollapse"
+            :collapse-transition="false" 
         >
             <menu-item 
                 v-for="item in menuList" 
@@ -22,12 +24,19 @@
 
 <script lang="ts" setup>
 import logo from '@/assets/logo.png'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import MenuItem from '@/components/navMenu/MenuItem.vue'
 import { useLoginStore } from '@/store/login'
 
+const logoImage = ref(logo)
 const userStore = useLoginStore()
 const menuList = computed(() => userStore.menu)
+
+// 接收折叠状态 Props
+defineProps<{isCollapse:boolean}>()
+
+
+
 </script>
 
 <style scoped lang="less">
@@ -42,6 +51,7 @@ const menuList = computed(() => userStore.menu)
         box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08); /* 底部阴影，增加层次感 */
         position: relative;
         z-index: 10; /* 保证阴影在菜单上方 */
+        overflow: hidden;
         
         .logo-img {
             width: 32px;
@@ -60,6 +70,7 @@ const menuList = computed(() => userStore.menu)
             margin-left: 12px;
             font-family: 'PingFang SC', sans-serif;
             letter-spacing: 1px; /* 字间距 */
+            white-space: nowrap;
         }
     }
 
