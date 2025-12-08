@@ -11,7 +11,7 @@ interface MemberType {
 }
 
 interface TransactionRecordsType {
-    transactionDate: string,
+    transactionDate?: string,
     transactionAmount: number,
     transactionType: string
 }
