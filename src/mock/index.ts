@@ -48,7 +48,7 @@ const menulist = [
             },
             {
                 name: "订单详情",
-                url: "/operations/detail",
+                url: "/operations/billingRule",
                 icon: "Share"
             },
             {
@@ -131,7 +131,7 @@ const menulist2 = [
             },
             {
                 name: "订单详情",
-                url: "/operations/detail",
+                url: "/operations/billingRule",
                 icon: "Share"
             },
             {

@@ -43,9 +43,9 @@ const routes: RouteRecordRaw[] = [
                 }
             },
             {
-                path: '/operations/detail',
-                name: 'detail',
-                component: () => import('@/views/operations/Detail.vue')
+                path: '/chargingstation/billing',
+                name: 'billingRule',
+                component: () => import('@/views/chargingstation/BillingRule.vue')
             },
             {
                 path: '/operations/total',
