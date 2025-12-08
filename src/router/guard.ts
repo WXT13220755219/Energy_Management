@@ -2,7 +2,7 @@
 import router from './index'
 import { useLoginStore } from '@/store/login'
 
-router.beforeEach((to,from) => {
+router.beforeEach((to) => {
     const loginStore = useLoginStore()
     const isLogin = loginStore.token
     // 用户未登录

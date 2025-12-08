@@ -68,6 +68,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { PersonalInfoType } from '@/type/personalTy'
+import { Plus, Delete, Warning, CircleCheck } from '@element-plus/icons-vue'
 
 const props = defineProps<{
   userInfo: PersonalInfoType

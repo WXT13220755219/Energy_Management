@@ -2,7 +2,7 @@ import Mock from "mockjs"
 Mock.setup({
     timeout: "200-600" //设置延迟时间
 })
-//管理员权限菜单
+// 1. 管理员权限菜单 (menulist)
 const menulist = [
     {
         name: "数据看板",
@@ -46,16 +46,13 @@ const menulist = [
                 url: "/operations/orders",
                 icon: "DocumentCopy",
             },
+            // [修改] 将原来的“订单详情”改为“计费管理”，并替换了原来的 /total 页面
             {
-                name: "订单详情",
+                name: "计费管理", // 或者叫 "计费规则"
                 url: "/operations/billingRule",
-                icon: "Share"
+                icon: "Money" // 使用 Money 图标更符合语境
             },
-            {
-                name: "计费管理",
-                url: "/operations/total",
-                icon: "Money"
-            },
+            // [删除] 删除了原来的 /operations/total 入口
         ]
     },
     {
@@ -78,14 +75,14 @@ const menulist = [
         url: "/system",
         icon: "Setting"
     },
-
     {
         name: "个人中心",
         url: "/personal",
         icon: "User"
     },
 ]
-//运营专员的菜单
+
+// 2. 运营专员菜单 (menulist2)
 const menulist2 = [
     {
         name: "数据看板",
@@ -129,14 +126,10 @@ const menulist2 = [
                 url: "/operations/orders",
                 icon: "DocumentCopy",
             },
-            {
-                name: "订单详情",
-                url: "/operations/billingRule",
-                icon: "Share"
-            },
+            // [修改] 同步修改
             {
                 name: "计费管理",
-                url: "/operations/total",
+                url: "/operations/billingRule",
                 icon: "Money"
             },
         ]
@@ -171,7 +164,7 @@ Mock.mock(/\/login/, "post", (options: any) => {
                     account: "dongligang1",
                     roles: ["admin"],
                 },
-                menulist
+                menulist // 返回修改后的 menulist
             }
         }
     } else if (username === "dongligang2" && password === "dongligang456") {
@@ -185,7 +178,7 @@ Mock.mock(/\/login/, "post", (options: any) => {
                     roles: ["user"],
                     account: "dongligang2"
                 },
-                menulist: menulist2
+                menulist: menulist2 // 返回修改后的 menulist2
             }
         }
     } else {
@@ -241,37 +234,37 @@ Mock.mock(/\/quickFunctions/, 'get', () => {
             list: [
                 { 
                     name: '充电站监控', 
-                    iconKey: 'repair', // 前端映射的Key
-                    bg: 'rgba(64, 158, 255, 0.1)', // 蓝色底
+                    iconKey: 'repair', 
+                    bg: 'rgba(64, 158, 255, 0.1)', 
                     path: '/chargingstation/monitor',
                     badge: 0 
                 },
                 { 
                     name: '营收统计', 
                     iconKey: 'progress', 
-                    bg: 'rgba(103, 194, 58, 0.1)', // 绿色底
+                    bg: 'rgba(103, 194, 58, 0.1)', 
                     path: '/chargingstation/revenue',
                     badge: 0 
                 },
                 { 
                     name: '充电桩监控', 
                     iconKey: 'remain', 
-                    bg: 'rgba(230, 162, 60, 0.1)', // 橙色底
+                    bg: 'rgba(230, 162, 60, 0.1)', 
                     path: '/chargingstation/fault',
                     badge: 0 
                 },
                 { 
                     name: '订单管理', 
                     iconKey: 'total', 
-                    bg: 'rgba(245, 108, 108, 0.1)', // 红色底
+                    bg: 'rgba(245, 108, 108, 0.1)', 
                     path: '/operations/orders',
                     badge: 0 
                 },
                 { 
-                    name: '计费管理', 
+                    name: '计费管理', // 常用功能入口也同步更新
                     iconKey: 'money', 
-                    bg: 'rgba(144, 147, 153, 0.1)', // 灰色底
-                    path: '/operations/total',
+                    bg: 'rgba(144, 147, 153, 0.1)', 
+                    path: '/operations/billingRule', // [修改] 更新路径指向新页面
                     badge: 0 
                 },
                 { 
@@ -279,7 +272,7 @@ Mock.mock(/\/quickFunctions/, 'get', () => {
                     iconKey: 'daily', 
                     bg: 'rgba(64, 158, 255, 0.1)', 
                     path: '/system', 
-                    badge: 12 // 模拟有 12 条待办
+                    badge: 12 
                 }
             ]
         }
@@ -2557,6 +2550,99 @@ Mock.mock(/\/cityList/, "get", () => {
         data: cityList
     }
 })
+
+
+// ============================== 计费管理 (Billing) 模块 Mock ==============================
+
+// 1. 初始化一些模拟数据 (驻留在内存中)
+let billingList = Mock.mock({
+    'list|12': [{ 
+        'id|+1': 1001, // ID 从 1001 开始自增
+        'ruleName': '@ctitle(5, 10)费率', // 随机中文标题
+        'version': /V[1-3]\.[0-9]/, // 随机版本号 V1.0 - V3.9
+        'status|1': [0, 1], // 随机状态 0 或 1
+        'createTime': '@datetime("yyyy-MM-dd HH:mm:ss")', // 随机创建时间
+        'effectiveTime': '@datetime("yyyy-MM-dd HH:mm:ss")', // 随机生效时间
+        'remark': '@csentence(5, 15)', // 随机备注
+        // 生成 3-5 个时段
+        'items|3-5': [{
+            'startTime': '00:00', // 这里的具体时间逻辑比较复杂，先由前端控制，后端仅存储
+            'endTime': '24:00',
+            'type|1': ['peak', 'flat', 'valley', 'sharp'],
+            'elecPrice|0.5-1.5': 1, // 0.5 到 1.5 之间的数字
+            'servicePrice|0.1-0.8': 1
+        }]
+    }]
+}).list;
+
+// 2. 接口：获取计费规则列表 (支持分页和搜索)
+Mock.mock(/\/billing\/rule\/list/, 'post', (options: any) => {
+    // 解析前端传来的 JSON 参数
+    const { page = 1, pageSize = 10, ruleName = '' } = JSON.parse(options.body);
+
+    // [逻辑] 过滤：如果有 ruleName，就进行模糊匹配
+    let mockList = billingList.filter((item: any) => {
+        if (ruleName && item.ruleName.indexOf(ruleName) === -1) return false;
+        return true;
+    });
+
+    // [逻辑] 分页：计算切片位置
+    const total = mockList.length;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const pageList = mockList.slice(start, end);
+
+    return {
+        code: 200,
+        message: '获取成功',
+        data: {
+            list: pageList,
+            total: total
+        }
+    };
+});
+
+// 3. 接口：新增或保存规则
+Mock.mock(/\/billing\/rule\/save/, 'post', (options: any) => {
+    const body = JSON.parse(options.body);
+    
+    if (body.id) {
+        // [逻辑] 编辑模式：查找对应 ID 并更新
+        const index = billingList.findIndex((item: any) => item.id === body.id);
+        if (index !== -1) {
+            // 合并旧数据和新数据
+            billingList[index] = { ...billingList[index], ...body };
+            return { code: 200, message: '更新成功', data: null };
+        } else {
+            return { code: 404, message: '未找到该记录', data: null };
+        }
+    } else {
+        // [逻辑] 新增模式：生成新 ID 并插入数组头部
+        const newRule = {
+            id: Mock.mock('@integer(2000, 9999)'), // 随机生成一个新 ID
+            createTime: Mock.mock('@now("yyyy-MM-dd HH:mm:ss")'), // 当前时间作为创建时间
+            status: 1, // 默认为启用
+            ...body // 展开前端传来的数据
+        };
+        billingList.unshift(newRule); // 加到数组最前面
+        return { code: 200, message: '创建成功', data: null };
+    }
+});
+
+// 4. 接口：删除规则
+Mock.mock(/\/billing\/rule\/delete/, 'post', (options: any) => {
+    const { ids } = JSON.parse(options.body);
+    
+    // [逻辑] 过滤掉 id 在 ids 数组中的项
+    // 只要 item.id 不在 ids 数组里，就保留下来 -> 相当于删除了 ids 里的项
+    billingList = billingList.filter((item: any) => !ids.includes(item.id));
+
+    return {
+        code: 200,
+        message: '删除成功',
+        data: null
+    };
+});
 
 // =========================== 报警管理 Alarm =================================
 //报警管理-报警列表接口

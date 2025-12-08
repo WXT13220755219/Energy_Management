@@ -43,15 +43,15 @@ const routes: RouteRecordRaw[] = [
                 }
             },
             {
-                path: '/chargingstation/billing',
+                path: '/operations/billingRule',
                 name: 'billingRule',
-                component: () => import('@/views/chargingstation/BillingRule.vue')
+                component: () => import('@/views/operations/BillingRule.vue')
             },
-            {
-                path: '/operations/total',
-                name: 'total',
-                component: () => import('@/views/operations/Total.vue')
-            },
+            // {
+            //     path: '/operations/total',
+            //     name: 'total',
+            //     component: () => import('@/views/operations/Total.vue')
+            // },
             {
                 path: '/alarm',
                 name: 'alarm',

@@ -220,7 +220,6 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { 
-  Document, View, User, Timer, Search, Plus, Refresh, 
   Files, Flag, Upload, Download, Share, Setting
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'

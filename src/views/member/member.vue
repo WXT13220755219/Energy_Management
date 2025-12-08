@@ -178,7 +178,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, reactive } from 'vue'
-import { Plus, Upload, User, Iphone, CreditCard, UploadFilled } from '@element-plus/icons-vue' // 引入图标
+import { UploadFilled } from '@element-plus/icons-vue' // 引入图标
 import type { MemberType } from '@/type/memberTy'
 import { getMemberAPI, type MemberParamsType } from '@/api/memberAPI'
 import { ElMessage } from 'element-plus'
